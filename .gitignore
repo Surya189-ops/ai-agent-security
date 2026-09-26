@@ -1,0 +1,9 @@
+.env
+dev.db
+node_modules/
+.prisma/
+.agents/
+.claude/
+.cursor/
+.devin/
+*.backup.ts

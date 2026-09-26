@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Agent {
+  id             String       @id
+  name           String
+  apiKey         String       @unique
+  dailyLimit     Float?
+  createdAt      DateTime     @default(now())
+  permissions    Permission[]
+  auditLogs      AuditLog[]
+}
+
+model Permission {
+  id        Int    @id @default(autoincrement())
+  agentId   String
+  action    String
+  allowed   Boolean
+  maxAmount Float?
+
+  agent Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+
+  @@unique([agentId, action])
+}
+
+model AuditLog {
+  id         Int      @id @default(autoincrement())
+  agentId    String
+  action     String
+  amount     Float?
+  allowed    Boolean
+  executed   Boolean  @default(false)
+  executedAt DateTime?
+  reason     String
+  createdAt  DateTime @default(now())
+
+  agent Agent @relation(fields: [agentId], references: [id], onDelete: Cascade)
+}
+
+model SecurityConfig {
+  id         Int      @id
+  killSwitch Boolean  @default(false)
+  updatedAt  DateTime @updatedAt
+}
