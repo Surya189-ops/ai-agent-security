@@ -26,6 +26,12 @@ Real-World Action
 
 The security layer makes the final authorization decision instead of trusting the AI model alone.
 
+## Core Principle
+
+> The AI agent requests. The security layer decides.
+
+The AI model does not directly control the security policies. Policies are enforced independently by the security service.
+
 ## Features
 
 * Agent-specific API authentication
@@ -41,7 +47,7 @@ The security layer makes the final authorization decision instead of trusting th
 * Security statistics dashboard
 * Recent security event monitoring
 
-## Authorization Flow
+## Authorization & Execution Flow
 
 ```text
 1. AI Agent requests an action
@@ -54,6 +60,73 @@ The security layer makes the final authorization decision instead of trusting th
 8. Security layer records the execution
 9. Executed transactions contribute to spending limits
 ```
+
+## Architecture
+
+```text
+                         ┌─────────────────────┐
+                         │      AI Agent       │
+                         │                     │
+                         │ Refund / Email /    │
+                         │ Customer Actions    │
+                         └──────────┬──────────┘
+                                    │
+                                    │ Action Request
+                                    ▼
+                 ┌──────────────────────────────────┐
+                 │       AI SECURITY LAYER          │
+                 │                                  │
+                 │  ┌────────────────────────────┐  │
+                 │  │ Agent Authentication       │  │
+                 │  └─────────────┬──────────────┘  │
+                 │                ▼                 │
+                 │  ┌────────────────────────────┐  │
+                 │  │ Permission & Policy Engine │  │
+                 │  └─────────────┬──────────────┘  │
+                 │                ▼                 │
+                 │  ┌────────────────────────────┐  │
+                 │  │ Security Controls          │  │
+                 │  │                            │  │
+                 │  │ • Rate Limits              │  │
+                 │  │ • Per-Action Limits        │  │
+                 │  │ • Daily Spending Limits    │  │
+                 │  │ • Kill Switch              │  │
+                 │  └─────────────┬──────────────┘  │
+                 └────────────────┼─────────────────┘
+                                  │
+                         ┌────────┴────────┐
+                         │                 │
+                      BLOCK             ALLOW
+                         │                 │
+                         ▼                 ▼
+                   ┌──────────┐    ┌─────────────────┐
+                   │  DENIED  │    │   Decision ID   │
+                   │  Action  │    │                 │
+                   └──────────┘    └────────┬────────┘
+                                            │
+                                            ▼
+                                  ┌──────────────────┐
+                                  │     Tool / API   │
+                                  │                  │
+                                  │ Payment / Email  │
+                                  │ Database / SaaS  │
+                                  └────────┬─────────┘
+                                           │
+                                           ▼
+                                  ┌──────────────────┐
+                                  │ Real-World Action│
+                                  └────────┬─────────┘
+                                           │
+                                           ▼
+                                  ┌──────────────────┐
+                                  │ Execution Commit │
+                                  │                  │
+                                  │ Audit Log        │
+                                  │ Spending Update  │
+                                  └──────────────────┘
+```
+
+See [architecture.md](architecture.md) for the detailed architecture.
 
 ## Example
 
@@ -93,15 +166,57 @@ Execution Committed
 Audit Log + Spending Updated
 ```
 
-## Security Model
+## Security Controls
 
-The project follows the principle:
+### Authentication
 
-> The AI agent requests. The security layer decides.
+Requests require valid security credentials.
 
-The AI model does not directly control the security policies.
+### Agent Permissions
 
-Policies are enforced independently by the security service.
+Each AI agent can have independent permissions for actions such as:
+
+```text
+read_customers
+send_email
+refund
+```
+
+### Monetary Limits
+
+Individual actions can have maximum transaction amounts.
+
+### Daily Spending Limits
+
+Agents can have a maximum amount they are allowed to execute per day.
+
+### Rate Limiting
+
+Agents are limited to a defined number of requests per minute.
+
+### Kill Switch
+
+A global emergency control can immediately disable agent actions.
+
+### Audit Logging
+
+Security decisions and executed actions are recorded for monitoring and investigation.
+
+### Execution Tracking
+
+Authorization and execution are tracked separately. Only successfully committed executions contribute to spending calculations.
+
+## Dashboard
+
+The dashboard provides visibility into:
+
+* Agents
+* Permissions
+* Spending
+* Remaining limits
+* Security events
+* Kill switch status
+* Policy configuration
 
 ## Tech Stack
 
@@ -132,6 +247,7 @@ ai-agent-security/
 │   ├── prisma.ts
 │   └── db-test.ts
 │
+├── architecture.md
 ├── .gitignore
 ├── package.json
 └── tsconfig.json
@@ -175,59 +291,11 @@ The dashboard will be available at:
 http://localhost:3000
 ```
 
-## Security Controls
-
-### Authentication
-
-Requests require valid security credentials.
-
-### Agent Permissions
-
-Each AI agent can have independent permissions for actions such as:
-
-```text
-read_customers
-send_email
-refund
-```
-
-### Monetary Limits
-
-Individual actions can have maximum transaction amounts.
-
-### Daily Spending Limits
-
-Agents can have a maximum amount they are allowed to execute per day.
-
-### Rate Limiting
-
-Agents are limited to a defined number of requests per minute.
-
-### Kill Switch
-
-A global emergency control can immediately disable agent actions.
-
-### Audit Logging
-
-Security decisions and executed actions are recorded for monitoring and investigation.
-
-## Dashboard
-
-The dashboard provides visibility into:
-
-* Agents
-* Permissions
-* Spending
-* Remaining limits
-* Security events
-* Kill switch status
-* Policy configuration
-
 ## Current Status
 
 This is an MVP demonstrating the core authorization and execution-control architecture for AI agents.
 
-It is intended for development, experimentation, demonstrations, and further security hardening.
+The current implementation is intended for development, experimentation, demonstrations, and further security hardening.
 
 ## Roadmap
 
