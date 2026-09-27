@@ -14,7 +14,7 @@ app.use(
   )
 );
 
-const PORT = 3000;
+const PORT = Number(process.env.PORT) || 3000;
 
 const SECURITY_API_KEY =
   process.env.SECURITY_API_KEY;
