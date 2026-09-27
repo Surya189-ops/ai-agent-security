@@ -3,18 +3,18 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Agent {
-  id             String       @id
-  name           String
-  apiKey         String       @unique
-  dailyLimit     Float?
-  createdAt      DateTime     @default(now())
-  permissions    Permission[]
-  auditLogs      AuditLog[]
+  id          String       @id
+  name        String
+  apiKey      String       @unique
+  dailyLimit  Float?
+  createdAt   DateTime     @default(now())
+  permissions Permission[]
+  auditLogs   AuditLog[]
 }
 
 model Permission {

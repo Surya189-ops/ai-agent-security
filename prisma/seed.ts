@@ -1,14 +1,31 @@
+import crypto from "crypto";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+function getApiKey(envName: string) {
+  return (
+    process.env[envName] ??
+    `agent_${crypto.randomBytes(32).toString("hex")}`
+  );
+}
+
 async function main() {
+  const refundBotApiKey = getApiKey("REFUND_BOT_API_KEY");
+  const supportBotApiKey = getApiKey("SUPPORT_BOT_API_KEY");
+  const readonlyBotApiKey = getApiKey("READONLY_BOT_API_KEY");
+
   await prisma.agent.upsert({
     where: { id: "refund-bot" },
-    update: {},
+    update: {
+      apiKey: refundBotApiKey,
+      dailyLimit: 50000,
+    },
     create: {
       id: "refund-bot",
       name: "Refund Bot",
+      apiKey: refundBotApiKey,
+      dailyLimit: 50000,
       permissions: {
         create: [
           {
@@ -22,7 +39,7 @@ async function main() {
           {
             action: "refund",
             allowed: true,
-            maxAmount: 5000,
+            maxAmount: 15000,
           },
         ],
       },
@@ -31,10 +48,13 @@ async function main() {
 
   await prisma.agent.upsert({
     where: { id: "support-bot" },
-    update: {},
+    update: {
+      apiKey: supportBotApiKey,
+    },
     create: {
       id: "support-bot",
       name: "Support Bot",
+      apiKey: supportBotApiKey,
       permissions: {
         create: [
           {
@@ -57,10 +77,13 @@ async function main() {
 
   await prisma.agent.upsert({
     where: { id: "readonly-bot" },
-    update: {},
+    update: {
+      apiKey: readonlyBotApiKey,
+    },
     create: {
       id: "readonly-bot",
       name: "Readonly Bot",
+      apiKey: readonlyBotApiKey,
       permissions: {
         create: [
           {
@@ -70,6 +93,7 @@ async function main() {
           {
             action: "send_email",
             allowed: false,
+            maxAmount: 0,
           },
           {
             action: "refund",
@@ -81,11 +105,36 @@ async function main() {
     },
   });
 
+  await prisma.securityConfig.upsert({
+    where: { id: 1 },
+    update: {},
+    create: {
+      id: 1,
+      killSwitch: false,
+    },
+  });
+
   console.log("Agents seeded successfully.");
+  console.log("Security config seeded successfully.");
+
+  if (!process.env.REFUND_BOT_API_KEY) {
+    console.log("Generated REFUND_BOT_API_KEY:", refundBotApiKey);
+  }
+
+  if (!process.env.SUPPORT_BOT_API_KEY) {
+    console.log("Generated SUPPORT_BOT_API_KEY:", supportBotApiKey);
+  }
+
+  if (!process.env.READONLY_BOT_API_KEY) {
+    console.log("Generated READONLY_BOT_API_KEY:", readonlyBotApiKey);
+  }
 }
 
 main()
-  .catch(console.error)
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  })
   .finally(async () => {
     await prisma.$disconnect();
   });
