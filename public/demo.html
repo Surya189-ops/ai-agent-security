@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>AI Agent Security — Live Demo</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+
+    .hero {
+      text-align: center;
+      margin-bottom: 45px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: #14532d;
+      color: #bbf7d0;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 42px;
+      margin: 0 0 12px;
+    }
+
+    .hero p {
+      max-width: 720px;
+      margin: auto;
+      color: #94a3b8;
+      font-size: 17px;
+    }
+
+    .flow {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 35px 0;
+    }
+
+    .flow-box {
+      padding: 14px 18px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 10px;
+      font-weight: bold;
+    }
+
+    .arrow {
+      color: #64748b;
+      font-size: 22px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 18px;
+      margin-bottom: 35px;
+    }
+
+    .card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 14px;
+      padding: 22px;
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .muted {
+      color: #94a3b8;
+    }
+
+    .allowed {
+      color: #86efac;
+    }
+
+    .blocked {
+      color: #fca5a5;
+    }
+
+    .demo-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    .demo-table th,
+    .demo-table td {
+      padding: 13px;
+      text-align: left;
+      border-bottom: 1px solid #334155;
+    }
+
+    .demo-table th {
+      color: #94a3b8;
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+
+    .status {
+      display: inline-block;
+      padding: 4px 9px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .status.allowed {
+      background: #14532d;
+    }
+
+    .status.blocked {
+      background: #7f1d1d;
+    }
+
+    .architecture {
+      margin-top: 35px;
+      text-align: center;
+      padding: 28px;
+      background: #020617;
+      border: 1px solid #334155;
+      border-radius: 14px;
+    }
+
+    .architecture div {
+      margin: 8px;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 45px;
+      color: #64748b;
+      font-size: 13px;
+    }
+
+    .links {
+      margin-top: 25px;
+    }
+
+    .links a {
+      display: inline-block;
+      margin: 5px;
+      padding: 10px 15px;
+      border: 1px solid #475569;
+      border-radius: 8px;
+      color: #e2e8f0;
+      text-decoration: none;
+    }
+
+    .links a:hover {
+      background: #1e293b;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <section class="hero">
+
+      <div class="badge">
+        ● PUBLIC READ-ONLY DEMO
+      </div>
+
+      <h1>AI Agent Security</h1>
+
+      <p>
+        An independent security and permission layer for autonomous AI agents.
+        Agents request actions. The security layer decides whether those actions
+        are allowed before execution.
+      </p>
+
+      <div class="links">
+        <a
+          href="https://github.com/Surya189-ops/ai-agent-security"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          View GitHub
+        </a>
+      </div>
+
+    </section>
+
+    <section>
+
+      <div class="flow">
+
+        <div class="flow-box">
+          🤖 AI Agent
+        </div>
+
+        <div class="arrow">→</div>
+
+        <div class="flow-box">
+          🔐 Security Layer
+        </div>
+
+        <div class="arrow">→</div>
+
+        <div class="flow-box">
+          🛠️ Tool / API
+        </div>
+
+      </div>
+
+    </section>
+
+    <section class="grid">
+
+      <div class="card">
+        <h3>🔐 Agent Permissions</h3>
+        <p class="muted">
+          Each agent has its own allowed and blocked actions.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>💰 Spending Controls</h3>
+        <p class="muted">
+          Per-action maximum amounts and daily spending limits protect
+          financial operations.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>🚦 Rate Limiting</h3>
+        <p class="muted">
+          Requests are limited per agent to reduce abuse and uncontrolled
+          activity.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>📝 Audit Logging</h3>
+        <p class="muted">
+          Authorization decisions and executed actions are recorded for
+          traceability.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>🛑 Kill Switch</h3>
+        <p class="muted">
+          Protected operations can be disabled through the security layer.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>⚡ Execution Tracking</h3>
+        <p class="muted">
+          Authorization and execution are separate. Spending is counted only
+          after an action is committed.
+        </p>
+      </div>
+
+    </section>
+
+    <section class="card">
+
+      <h2>Production Security Test</h2>
+
+      <p class="muted">
+        These examples represent verified production behavior of the deployed
+        security layer.
+      </p>
+
+      <table class="demo-table">
+
+        <thead>
+          <tr>
+            <th>Agent</th>
+            <th>Action</th>
+            <th>Amount</th>
+            <th>Decision</th>
+            <th>Reason</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>Refund Bot</td>
+            <td>Refund</td>
+            <td>₹3,000</td>
+
+            <td>
+              <span class="status allowed">
+                ALLOWED
+              </span>
+            </td>
+
+            <td class="allowed">
+              Action is allowed
+            </td>
+          </tr>
+
+          <tr>
+            <td>Readonly Bot</td>
+            <td>Refund</td>
+            <td>₹3,000</td>
+
+            <td>
+              <span class="status blocked">
+                BLOCKED
+              </span>
+            </td>
+
+            <td class="blocked">
+              Agent is not allowed to perform: refund
+            </td>
+          </tr>
+
+          <tr>
+            <td>Refund Bot</td>
+            <td>Refund</td>
+            <td>₹50,000</td>
+
+            <td>
+              <span class="status blocked">
+                BLOCKED
+              </span>
+            </td>
+
+            <td class="blocked">
+              Amount exceeds configured action limit
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </section>
+
+    <section class="architecture">
+
+      <h2>Security Architecture</h2>
+
+      <div>🤖 AI Agent</div>
+
+      <div>↓</div>
+
+      <div>🔑 Agent Authentication</div>
+
+      <div>↓</div>
+
+      <div>🛡️ Permission Check</div>
+
+      <div>↓</div>
+
+      <div>💰 Amount / Daily Limit Check</div>
+
+      <div>↓</div>
+
+      <div>🚦 Rate Limit Check</div>
+
+      <div>↓</div>
+
+      <div>📝 Audit Decision</div>
+
+      <div>↓</div>
+
+      <div>⚙️ Actual Action</div>
+
+      <div>↓</div>
+
+      <div>✅ Commit Execution</div>
+
+    </section>
+
+    <section class="card" style="margin-top:35px;">
+
+      <h2>Technology</h2>
+
+      <p class="muted">
+        TypeScript · Node.js · Express · Prisma · PostgreSQL · Neon · Render
+      </p>
+
+    </section>
+
+    <div class="footer">
+
+      Public demo contains no credentials and does not expose administrative
+      controls.
+
+      <br />
+
+      AI Agent Security & Permission Manager
+
+    </div>
+
+  </div>
+
+</body>
+</html>
