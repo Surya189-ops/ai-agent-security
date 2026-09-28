@@ -14,6 +14,17 @@ app.use(
   )
 );
 
+// ============================================================
+// PUBLIC RECRUITER DEMO
+// Read-only demo. No API key required.
+// ============================================================
+
+app.get("/demo", (_req, res) => {
+  res.sendFile(
+    path.join(__dirname, "../public/demo.html")
+  );
+});
+
 const PORT = Number(process.env.PORT) || 3000;
 
 const SECURITY_API_KEY =
